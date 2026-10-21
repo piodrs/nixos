@@ -1,0 +1,10 @@
+URxvt.font: xft:Iosevka:size=11
+URxvt.boldFont: xft:Iosevka:style=Bold:size=11
+URxvt.italicFont: xft:Iosevka:style=Italic:size=11
+URxvt.boldItalicFont: xft:Iosevka:style=Bold Italic:size=11
+URxvt.background: #000000
+URxvt.foreground: #f8f8f2
+URxvt.cursorColor: #ff79c6
+URxvt.scrollBar: false
+URxvt.internalBorder: 0
+URxvt.saveLines: 10000

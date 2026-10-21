@@ -1,9 +1,17 @@
 {
   "plugins": {
+    "LuaSnip": {
+      "rev": "0abc8f390b278c3b4aabc4c004ac8a088b65cf24",
+      "src": "https://github.com/L3MON4D3/LuaSnip"
+    },
     "coc.nvim": {
       "rev": "24477e09540dc0241cd6ea7ad003691a7bdf863e",
       "src": "https://github.com/neoclide/coc.nvim",
       "version": "'release'"
+    },
+    "direnv.vim": {
+      "rev": "ab2a7e08dd630060cd81d7946739ac7442a4f269",
+      "src": "https://github.com/direnv/direnv.vim"
     },
     "gitsigns.nvim": {
       "rev": "fd780920613e541cbdfac41bf711583ed49f9249",

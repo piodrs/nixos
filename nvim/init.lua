@@ -3,12 +3,14 @@ local config = vim.fn.stdpath('config')
 vim.g.mapleader = ' '
 
 vim.g.coc_data_home = vim.fn.stdpath('data') .. '/coc'
+vim.g.coc_start_at_startup = 0
 
 vim.pack.add(
     {
         'https://github.com/nvim-lua/plenary.nvim',
         'https://github.com/nvim-telescope/telescope.nvim',
         'https://github.com/nvim-treesitter/nvim-treesitter',
+        'https://github.com/L3MON4D3/LuaSnip',
         'https://github.com/tpope/vim-fugitive',
         'https://github.com/lewis6991/gitsigns.nvim',
         {
@@ -21,6 +23,25 @@ vim.pack.add(
         confirm = false,
     }
 )
+
+local function with_direnv(callback)
+    if vim.fn.executable('direnv') == 0 then
+        return callback()
+    end
+
+    vim.system({ 'direnv', 'export', 'json' }, { text = true }, vim.schedule_wrap(function(result)
+        if result.code ~= 0 then
+            vim.notify('direnv: ' .. vim.trim(result.stderr or ''), vim.log.levels.WARN)
+        elseif result.stdout ~= '' then
+            for key, value in pairs(vim.json.decode(result.stdout)) do
+                vim.env[key] = value ~= vim.NIL and value or nil
+            end
+        end
+        callback()
+    end))
+end
+
+with_direnv(function() vim.cmd.CocStart() end)
 
 vim.api.nvim_create_user_command('PluginsUpdate', function()
     local names = {}
@@ -70,6 +91,10 @@ vim.api.nvim_create_autocmd({ 'FocusGained', 'BufEnter', 'CursorHold', 'CursorHo
 vim.cmd.colorscheme('gruber-darker')
 
 
+local luasnip = require('luasnip')
+luasnip.add_snippets('python', dofile(config .. '/snippets/python.lua'))
+
+
 local map = vim.keymap.set
 local silent = { silent = true }
 
@@ -113,7 +138,10 @@ map('x', 'K', ":move '<-2<CR>gv=gv")
 map('x', '<leader>p', '"_dP')
 map({ 'n', 'x' }, '<leader>y', '"+y')
 
-require('terminal')
+vim.api.nvim_create_user_command('VTerm', 'vertical terminal', {})
+
+map('n', '<leader>tt', '<Cmd>VTerm<CR>', silent)
+map('t', '<Esc>', '<C-\\><C-n>', silent)
 
 
 map('n', 'gd', '<Plug>(coc-definition)', silent)
@@ -137,6 +165,11 @@ map('n', '<F4>', '<Plug>(coc-codeaction-cursor)', silent)
 local expr = { expr = true, silent = true }
 
 map('i', '<Tab>', function()
+    if luasnip.expand_or_jumpable() then
+        luasnip.expand_or_jump()
+        return ''
+    end
+
     if vim.fn['coc#pum#visible']() == 1 then
         return vim.fn['coc#pum#next'](1)
     end
@@ -146,6 +179,11 @@ map('i', '<Tab>', function()
 end, expr)
 
 map('i', '<S-Tab>', function()
+    if luasnip.jumpable(-1) then
+        luasnip.jump(-1)
+        return ''
+    end
+
     return vim.fn['coc#pum#visible']() == 1 and vim.fn['coc#pum#prev'](1) or '<C-h>'
 end, expr)
 
@@ -158,6 +196,13 @@ map('i', '<C-Space>', function() return vim.fn['coc#refresh']() end, expr)
 
 local treesitter = require('nvim-treesitter')
 local parsers = { 'c', 'javascript', 'nix', 'python', 'typescript' }
+local indentation = {
+    c = 4,
+    javascript = 2,
+    nix = 2,
+    python = 4,
+    typescript = 2,
+}
 
 treesitter.setup({
     install_dir = vim.fn.stdpath('data') .. '/site',
@@ -171,7 +216,13 @@ vim.api.nvim_create_autocmd('FileType', {
     group = languages,
     pattern = parsers,
     callback = function(event)
+        local width = indentation[event.match]
+
         pcall(vim.treesitter.start, event.buf)
+        vim.bo[event.buf].expandtab = true
+        vim.bo[event.buf].shiftwidth = width
+        vim.bo[event.buf].softtabstop = width
+        vim.bo[event.buf].tabstop = width
         vim.bo[event.buf].indentexpr = "v:lua.require'nvim-treesitter'.indentexpr()"
     end,
 })

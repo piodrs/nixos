@@ -18,9 +18,6 @@ let
     wallpapers = "wallpapers";
   };
 
-  st = pkgs.st.override {
-    conf = builtins.readFile ./st/config.h;
-  };
 in
 {
   home = {
@@ -35,34 +32,35 @@ in
       curl
       dmenu
       dunst
+      eclipses.eclipse-java
       feh
+      flameshot
       gcc
+      gnumake
       gnutar
       i3status
       imagemagick
       iosevka
+      komikku
       neovim
       nil
       nixfmt
       nodejs
-      eclipses.eclipse-java
+      prismlauncher
       python3
+      ranger
       ripgrep
+      rxvt-unicode
       ruff
-      st
+      simplescreenrecorder
       tree-sitter
       typescript
       typescript-language-server
-      prismlauncher
-      komikku
-      vlc
-      ranger
-      simplescreenrecorder
-      gnumake
       unzip
       uv
+      vlc
       vscodium
-      flameshot
+      xrdb
     ];
 
     sessionVariables = {
@@ -77,9 +75,19 @@ in
     force = true;
   }) configDirectories;
 
+  home.file.".Xresources" = {
+    source = mkOutOfStoreSymlink "${dotfiles}/Xresources";
+    force = true;
+  };
+
   fonts.fontconfig.enable = true;
 
   programs = {
+    direnv = {
+      enable = true;
+      nix-direnv.enable = true;
+    };
+
     git = {
       enable = true;
 
@@ -111,9 +119,13 @@ in
       extraPackages =
         epkgs: with epkgs; [
           corfu
+          envrc
+          flymake-ruff
           gruber-darker-theme
           nix-mode
           orderless
+          reformatter
+          typescript-mode
           yasnippet
         ];
     };

@@ -39,7 +39,16 @@
       (list (expand-file-name "snippets" user-emacs-directory)))
 (yas-global-mode 1)
 
+(require 'envrc)
+(envrc-global-mode 1)
+
 (require 'eglot)
+(require 'flymake-ruff)
+(require 'reformatter)
+
+(reformatter-define ruff-format
+  :program "ruff"
+  :args '("format" "-"))
 
 (defun setup-c-mode ()
   (setq-local c-basic-offset 4
@@ -49,6 +58,13 @@
 
 (defun setup-js-mode ()
   (setq-local js-indent-level 2
+              tab-width 2
+              indent-tabs-mode nil)
+  (eglot-ensure))
+
+(defun setup-typescript-mode ()
+  (setq-local typescript-indent-level 2
+              typescript-ts-mode-indent-offset 2
               tab-width 2
               indent-tabs-mode nil)
   (eglot-ensure))
@@ -65,20 +81,41 @@
   (eglot-ensure))
 
 (add-to-list 'eglot-server-programs
+             '((c-mode c-ts-mode)
+               . ("clangd" "--background-index" "--clang-tidy")))
+(add-to-list 'eglot-server-programs
+             '((js-mode js-ts-mode typescript-mode typescript-ts-mode tsx-ts-mode)
+               . ("typescript-language-server" "--stdio")))
+(add-to-list 'eglot-server-programs
              '((python-mode python-ts-mode)
                . ("basedpyright-langserver" "--stdio")))
 (add-to-list 'eglot-server-programs '(nix-mode . ("nil")))
 
 (setq-default eglot-workspace-configuration
-              '(:nil (:formatting (:command ["nixfmt"]))))
+              '(:basedpyright (:analysis (:typeCheckingMode "basic"))
+                :nil (:formatting (:command ["nixfmt"]))))
+
+(defun setup-python-diagnostics ()
+  (when (derived-mode-p 'python-mode 'python-ts-mode)
+    (flymake-ruff-load)))
+
+(defun format-code ()
+  (interactive)
+  (if (derived-mode-p 'python-mode 'python-ts-mode)
+      (ruff-format-buffer)
+    (eglot-format-buffer)))
 
 (add-hook 'c-mode-hook #'setup-c-mode)
 (add-hook 'c-ts-mode-hook #'setup-c-mode)
 (add-hook 'js-mode-hook #'setup-js-mode)
 (add-hook 'js-ts-mode-hook #'setup-js-mode)
+(add-hook 'typescript-mode-hook #'setup-typescript-mode)
+(add-hook 'typescript-ts-mode-hook #'setup-typescript-mode)
+(add-hook 'tsx-ts-mode-hook #'setup-typescript-mode)
 (add-hook 'python-mode-hook #'setup-python-mode)
 (add-hook 'python-ts-mode-hook #'setup-python-mode)
 (add-hook 'nix-mode-hook #'setup-nix-mode)
+(add-hook 'eglot-managed-mode-hook #'setup-python-diagnostics)
 
 (defun select-line ()
   (interactive)
@@ -127,6 +164,6 @@
 (global-set-key (kbd "C-c r") #'query-replace-regexp)
 (global-set-key (kbd "C-c e r") #'eglot-rename)
 (global-set-key (kbd "C-c e a") #'eglot-code-actions)
-(global-set-key (kbd "C-c e f") #'eglot-format-buffer)
+(global-set-key (kbd "C-c e f") #'format-code)
 (global-set-key (kbd "C-c /") #'comment-dwim)
 (global-set-key (kbd "C-c g") #'goto-line)

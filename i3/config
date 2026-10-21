@@ -1,5 +1,5 @@
 set $mod Mod4
-set $terminal st
+set $terminal urxvt
 set $menu dmenu_run
 set $font Iosevka 10
 set $pink #ff79c6
@@ -11,6 +11,7 @@ default_border pixel 1
 default_floating_border pixel 1
 client.focused $pink #1c1c1c #ffffff $pink $pink
 
+exec_always --no-startup-id xrdb -merge ~/.Xresources
 exec_always --no-startup-id feh --no-fehbg --bg-fill ~/.config/wallpapers/hands.jpg
 exec --no-startup-id dunst
 
