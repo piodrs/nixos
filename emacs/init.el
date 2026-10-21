@@ -167,3 +167,5 @@
 (global-set-key (kbd "C-c e f") #'format-code)
 (global-set-key (kbd "C-c /") #'comment-dwim)
 (global-set-key (kbd "C-c g") #'goto-line)
+(global-set-key (kbd "<f5>") #'shell-command)
+(global-set-key (kbd "<f6>") #'compile)

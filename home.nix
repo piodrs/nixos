@@ -47,6 +47,7 @@ in
       nixfmt
       nodejs
       prismlauncher
+      spotify
       python3
       ranger
       ripgrep
