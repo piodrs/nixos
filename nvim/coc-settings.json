@@ -1,0 +1,53 @@
+{
+  "suggest.labelMaxLength": 40,
+  "suggest.floatConfig": {
+    "border": false,
+    "maxWidth": 50,
+    "maxHeight": 10
+  },
+  "languageserver": {
+    "ecma": {
+      "command": "typescript-language-server",
+      "args": ["--stdio"],
+      "filetypes": ["javascript", "typescript"],
+      "rootPatterns": ["tsconfig.json", "jsconfig.json", "package.json", ".git"]
+    },
+    "clangd": {
+      "command": "clangd",
+      "args": ["--background-index", "--clang-tidy"],
+      "filetypes": ["c"],
+      "rootPatterns": ["compile_commands.json", "compile_flags.txt", ".clangd", ".git"]
+    },
+    "basedpyright": {
+      "command": "basedpyright-langserver",
+      "args": ["--stdio"],
+      "filetypes": ["python"],
+      "rootPatterns": ["pyproject.toml", "pyrightconfig.json", "setup.py", "setup.cfg", "requirements.txt", ".git"],
+      "settings": {
+        "basedpyright": {
+          "analysis": {
+            "typeCheckingMode": "basic"
+          }
+        }
+      }
+    },
+    "ruff": {
+      "command": "ruff",
+      "args": ["server"],
+      "filetypes": ["python"],
+      "rootPatterns": ["pyproject.toml", "ruff.toml", ".ruff.toml", ".git"]
+    },
+    "nix": {
+      "command": "nil",
+      "filetypes": ["nix"],
+      "rootPatterns": ["flake.nix", ".git"],
+      "settings": {
+        "nil": {
+          "formatting": {
+            "command": ["nixfmt"]
+          }
+        }
+      }
+    }
+  }
+}
