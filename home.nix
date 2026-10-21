@@ -62,6 +62,7 @@ in
       unzip
       uv
       vscodium
+      flameshot
     ];
 
     sessionVariables = {
