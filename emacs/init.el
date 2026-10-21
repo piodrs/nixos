@@ -44,6 +44,7 @@
 
 (require 'eglot)
 (require 'flymake-ruff)
+(require 'multiple-cursors)
 (require 'reformatter)
 
 (reformatter-define ruff-format
@@ -73,6 +74,7 @@
   (setq-local python-indent-offset 4
               tab-width 4
               indent-tabs-mode nil)
+  (add-hook 'before-save-hook #'ruff-format-buffer nil t)
   (eglot-ensure))
 
 (defun setup-nix-mode ()
@@ -167,5 +169,6 @@
 (global-set-key (kbd "C-c e f") #'format-code)
 (global-set-key (kbd "C-c /") #'comment-dwim)
 (global-set-key (kbd "C-c g") #'goto-line)
+(global-set-key (kbd "C-c m") #'mc/mark-all-dwim)
 (global-set-key (kbd "<f5>") #'shell-command)
 (global-set-key (kbd "<f6>") #'compile)

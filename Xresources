@@ -5,6 +5,7 @@ URxvt.boldItalicFont: xft:Iosevka:style=Bold Italic:size=11
 URxvt.background: #000000
 URxvt.foreground: #f8f8f2
 URxvt.cursorColor: #ff79c6
+URxvt.geometry: 80x-1
 URxvt.scrollBar: false
 URxvt.internalBorder: 0
 URxvt.saveLines: 10000

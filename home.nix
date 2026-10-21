@@ -123,6 +123,7 @@ in
           envrc
           flymake-ruff
           gruber-darker-theme
+          multiple-cursors
           nix-mode
           orderless
           reformatter
