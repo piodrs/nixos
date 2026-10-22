@@ -28,6 +28,9 @@
   networking = {
     hostName = "nixos";
     networkmanager.enable = true;
+    nftables.enable = true;
+
+    firewall.enable = true;
   };
 
   time.timeZone = "America/Recife";
