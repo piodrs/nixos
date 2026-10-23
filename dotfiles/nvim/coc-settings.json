@@ -15,7 +15,7 @@
     "clangd": {
       "command": "clangd",
       "args": ["--background-index", "--clang-tidy"],
-      "filetypes": ["c"],
+      "filetypes": ["c", "cpp"],
       "rootPatterns": ["compile_commands.json", "compile_flags.txt", ".clangd", ".git"]
     },
     "basedpyright": {

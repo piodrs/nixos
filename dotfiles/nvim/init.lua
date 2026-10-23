@@ -5,25 +5,6 @@ vim.g.mapleader = ' '
 vim.g.coc_data_home = vim.fn.stdpath('data') .. '/coc'
 vim.g.coc_start_at_startup = 0
 
-vim.pack.add(
-    {
-        'https://github.com/nvim-lua/plenary.nvim',
-        'https://github.com/nvim-telescope/telescope.nvim',
-        'https://github.com/nvim-treesitter/nvim-treesitter',
-        'https://github.com/L3MON4D3/LuaSnip',
-        'https://github.com/tpope/vim-fugitive',
-        'https://github.com/lewis6991/gitsigns.nvim',
-        {
-            src = 'https://github.com/neoclide/coc.nvim',
-            version = 'release',
-        },
-        'https://github.com/blazkowolf/gruber-darker.nvim',
-    },
-    {
-        confirm = false,
-    }
-)
-
 local function with_direnv(callback)
     if vim.fn.executable('direnv') == 0 then
         return callback()
@@ -42,17 +23,6 @@ local function with_direnv(callback)
 end
 
 with_direnv(function() vim.cmd.CocStart() end)
-
-vim.api.nvim_create_user_command('PluginsUpdate', function()
-    local names = {}
-    for _, plugin in ipairs(vim.pack.get(nil, { info = false })) do
-        if plugin.active then
-            names[#names + 1] = plugin.spec.name
-        end
-    end
-    vim.pack.update(names)
-end, {})
-
 
 vim.opt.number = true
 vim.opt.relativenumber = true
@@ -87,13 +57,10 @@ vim.api.nvim_create_autocmd({ 'FocusGained', 'BufEnter', 'CursorHold', 'CursorHo
     command = 'checktime',
 })
 
-
 vim.cmd.colorscheme('gruber-darker')
-
 
 local luasnip = require('luasnip')
 luasnip.add_snippets('python', dofile(config .. '/snippets/python.lua'))
-
 
 local map = vim.keymap.set
 local silent = { silent = true }
@@ -108,7 +75,6 @@ map('n', '<leader>fs', telescope.live_grep, silent)
 map('n', '<leader>fh', telescope.help_tags, silent)
 map('n', '<leader>fq', telescope.quickfix, silent)
 
-
 local git = require('gitsigns')
 git.setup()
 
@@ -121,7 +87,6 @@ map('n', ']h', '<Cmd>Gitsigns nav_hunk next<CR>', silent)
 map('n', '<leader>hp', git.preview_hunk, silent)
 map('n', '<leader>hs', git.stage_hunk, silent)
 map('n', '<leader>hu', git.undo_stage_hunk, silent)
-
 
 map('n', '<leader>cd', '<Cmd>Ex<CR>', silent)
 map('n', '<leader>u', '<Cmd>undolist<CR>', silent)
@@ -142,7 +107,6 @@ vim.api.nvim_create_user_command('VTerm', 'vertical terminal', {})
 
 map('n', '<leader>tt', '<Cmd>VTerm<CR>', silent)
 map('t', '<Esc>', '<C-\\><C-n>', silent)
-
 
 map('n', 'gd', '<Plug>(coc-definition)', silent)
 map('n', 'gD', '<Plug>(coc-declaration)', silent)
@@ -193,22 +157,16 @@ end, expr)
 
 map('i', '<C-Space>', function() return vim.fn['coc#refresh']() end, expr)
 
-
 local treesitter = require('nvim-treesitter')
-local parsers = { 'c', 'javascript', 'nix', 'python', 'typescript' }
+local parsers = { 'c', 'cpp', 'javascript', 'nix', 'python', 'typescript' }
 local indentation = {
     c = 4,
+    cpp = 4,
     javascript = 2,
     nix = 2,
     python = 4,
     typescript = 2,
 }
-
-treesitter.setup({
-    install_dir = vim.fn.stdpath('data') .. '/site',
-})
-
-treesitter.install(parsers):wait(300000)
 
 local languages = vim.api.nvim_create_augroup('nvim_languages', { clear = true })
 

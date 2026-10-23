@@ -7,17 +7,8 @@
 
 let
   editor = "nvim";
-  dotfiles = "${config.home.homeDirectory}/nixos";
+  dotfiles = "${config.home.homeDirectory}/nixos/dotfiles";
   inherit (config.lib.file) mkOutOfStoreSymlink;
-
-  configDirectories = {
-    dunst = "dunst";
-    emacs = "emacs";
-    i3 = "i3";
-    nvim = "nvim";
-    wallpapers = "wallpapers";
-  };
-
 in
 {
   home = {
@@ -33,7 +24,6 @@ in
       dmenu
       dunst
       eclipses.eclipse-java
-      feh
       flameshot
       gcc
       gnumake
@@ -42,18 +32,16 @@ in
       imagemagick
       iosevka
       komikku
-      neovim
       nil
       nixfmt
       nodejs
       prismlauncher
-      spotify
       python3
-      ranger
       ripgrep
-      rxvt-unicode
       ruff
+      rxvt-unicode
       simplescreenrecorder
+      spotify
       tree-sitter
       typescript
       typescript-language-server
@@ -63,25 +51,52 @@ in
       vscodium
       xrdb
     ];
-
-    sessionVariables = {
-      EDITOR = editor;
-      VISUAL = editor;
-    };
   };
 
-  xdg.configFile = builtins.mapAttrs (_: subpath: {
-    source = mkOutOfStoreSymlink "${dotfiles}/${subpath}";
-    recursive = true;
-    force = true;
-  }) configDirectories;
+  fonts.fontconfig.enable = true;
 
   home.file.".Xresources" = {
     source = mkOutOfStoreSymlink "${dotfiles}/Xresources";
     force = true;
   };
 
-  fonts.fontconfig.enable = true;
+  xdg.configFile = {
+    "nvim/init.lua".force = true;
+
+    "dunst/dunstrc" = {
+      source = mkOutOfStoreSymlink "${dotfiles}/dunst/dunstrc";
+      force = true;
+    };
+
+    emacs = {
+      source = mkOutOfStoreSymlink "${dotfiles}/emacs";
+      recursive = true;
+      force = true;
+    };
+
+    i3 = {
+      source = mkOutOfStoreSymlink "${dotfiles}/i3";
+      recursive = true;
+      force = true;
+    };
+
+    "nvim/coc-settings.json" = {
+      source = mkOutOfStoreSymlink "${dotfiles}/nvim/coc-settings.json";
+      force = true;
+    };
+
+    "nvim/snippets" = {
+      source = mkOutOfStoreSymlink "${dotfiles}/nvim/snippets";
+      recursive = true;
+      force = true;
+    };
+
+    wallpapers = {
+      source = mkOutOfStoreSymlink "${dotfiles}/wallpapers";
+      recursive = true;
+      force = true;
+    };
+  };
 
   programs = {
     direnv = {
@@ -89,34 +104,9 @@ in
       nix-direnv.enable = true;
     };
 
-    git = {
-      enable = true;
-
-      settings = {
-        user = {
-          name = "piodrs";
-          email = "piodfallen@gmail.com";
-        };
-
-        init.defaultBranch = "main";
-        core.editor = editor;
-      };
-    };
-
-    ssh = {
-      enable = true;
-      enableDefaultConfig = false;
-
-      settings."github.com" = {
-        hostname = "github.com";
-        user = "git";
-        identityFile = "~/.ssh/id_ed25519";
-        identitiesOnly = true;
-      };
-    };
-
     emacs = {
       enable = true;
+
       extraPackages =
         epkgs: with epkgs; [
           corfu
@@ -132,6 +122,65 @@ in
         ];
     };
 
+    feh.enable = true;
+
+    git = {
+      enable = true;
+
+      settings = {
+        user = {
+          name = "piodrs";
+          email = "piodfallen@gmail.com";
+        };
+
+        init.defaultBranch = "main";
+        core.editor = editor;
+      };
+    };
+
     home-manager.enable = true;
+
+    neovim = {
+      enable = true;
+      defaultEditor = true;
+      withNodeJs = true;
+      initLua = builtins.readFile ./dotfiles/nvim/init.lua;
+
+      plugins = with pkgs.vimPlugins; [
+        coc-nvim
+        gitsigns-nvim
+        gruber-darker-nvim
+        luasnip
+        plenary-nvim
+        telescope-nvim
+        vim-fugitive
+        (nvim-treesitter.withPlugins (
+          parsers: with parsers; [
+            c
+            cpp
+            javascript
+            nix
+            python
+            typescript
+          ]
+        ))
+      ];
+    };
+
+    ranger.enable = true;
+
+    ssh = {
+      enable = true;
+      enableDefaultConfig = false;
+
+      settings."github.com" = {
+        hostname = "github.com";
+        user = "git";
+        identityFile = "~/.ssh/id_ed25519";
+        identitiesOnly = true;
+      };
+    };
+
   };
+
 }

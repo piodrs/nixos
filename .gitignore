@@ -1,8 +1,8 @@
 .direnv/
 result
 result-*
-emacs/eln-cache/
-emacs/auto-save-list/
-emacs/.mc-lists.el
+dotfiles/emacs/eln-cache/
+dotfiles/emacs/auto-save-list/
+dotfiles/emacs/.mc-lists.el
 *.elc
 *.eln
