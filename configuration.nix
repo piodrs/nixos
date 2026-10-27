@@ -1,5 +1,10 @@
-{ pkgs, username, ... }:
+{ inputs, pkgs, username, ... }:
 
+let
+  adachi = inputs.adachi.packages.${pkgs.stdenv.hostPlatform.system}.default.override {
+    configFile = ./adachi/config.h;
+  };
+in
 {
   imports = [ ./hardware-configuration.nix ];
 
@@ -62,6 +67,15 @@
       displayManager.lightdm.enable = true;
       desktopManager.xfce.enable = true;
       windowManager.i3.enable = true;
+      windowManager.session = [
+        {
+          name = "adachi";
+          start = ''
+            ${adachi}/bin/adachi &
+            waitPID=$!
+          '';
+        }
+      ];
     };
 
     printing.enable = true;
@@ -79,6 +93,8 @@
   };
 
   security.rtkit.enable = true;
+
+  environment.systemPackages = [ adachi ];
 
   virtualisation.docker.enable = true;
 

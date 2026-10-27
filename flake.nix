@@ -9,6 +9,11 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
+    adachi = {
+      url = "github:piodrs/adachi";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
     dired-nvim = {
       url = "github:X3eRo0/dired.nvim";
       flake = false;

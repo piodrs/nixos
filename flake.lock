@@ -1,5 +1,25 @@
 {
   "nodes": {
+    "adachi": {
+      "inputs": {
+        "nixpkgs": [
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1793116230,
+        "narHash": "sha256-1ItJ6Tpd69LUjFGDxpM0t0ODGluUhV46xSca35euNu8=",
+        "owner": "piodrs",
+        "repo": "adachi",
+        "rev": "27915846bb8a3ab2abec3a04a885295ab2f2f1aa",
+        "type": "github"
+      },
+      "original": {
+        "owner": "piodrs",
+        "repo": "adachi",
+        "type": "github"
+      }
+    },
     "dired-nvim": {
       "flake": false,
       "locked": {
@@ -55,6 +75,7 @@
     },
     "root": {
       "inputs": {
+        "adachi": "adachi",
         "dired-nvim": "dired-nvim",
         "home-manager": "home-manager",
         "nixpkgs": "nixpkgs"
