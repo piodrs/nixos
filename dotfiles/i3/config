@@ -12,7 +12,7 @@ default_floating_border pixel 1
 client.focused $pink #1c1c1c #ffffff $pink $pink
 
 exec_always --no-startup-id xrdb -merge ~/.Xresources
-exec_always --no-startup-id feh --no-fehbg --bg-fill ~/.config/wallpapers/hands.jpg
+exec_always --no-startup-id feh --no-fehbg --bg-fill ~/.config/wallpapers/penger.jpg
 exec --no-startup-id dunst
 
 bindsym $mod+Return exec $terminal
