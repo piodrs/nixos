@@ -18,6 +18,7 @@ exec --no-startup-id dunst
 bindsym $mod+Return exec $terminal
 bindsym $mod+d exec $menu
 bindsym $mod+Shift+a exec $terminal -e alsamixer
+bindsym $mod+Control+l exec --no-startup-id loginctl lock-session
 bindsym $mod+Shift+q kill
 
 bindsym XF86AudioRaiseVolume exec --no-startup-id wpctl set-volume -l 1.0 @DEFAULT_AUDIO_SINK@ 5%+

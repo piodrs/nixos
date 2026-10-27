@@ -43,6 +43,7 @@ in
       gcc
       gnumake
       gnutar
+      i3lock
       i3status
       imagemagick
       iosevka
@@ -162,5 +163,12 @@ in
         identitiesOnly = true;
       };
     };
+  };
+
+  services.screen-locker = {
+    enable = true;
+    lockCmd = "${pkgs.i3lock}/bin/i3lock --nofork --color=101010 --ignore-empty-password --show-failed-attempts";
+    inactiveInterval = 10;
+    xautolock.enable = false;
   };
 }
