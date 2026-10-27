@@ -9,7 +9,7 @@
 
 #define ADACHI_STARTUP_COMMANDS                                             \
     ADACHI_RUN("xrdb -merge ~/.Xresources")                                \
-    ADACHI_RUN("feh --no-fehbg --bg-fill ~/.config/wallpapers/penger.jpg") \
+    ADACHI_RUN("feh --no-fehbg --bg-fill ~/.config/wallpapers/yuki.png")   \
     ADACHI_RUN("dunst")
 
 #define ADACHI_BINDINGS                                    \

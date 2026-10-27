@@ -9,7 +9,8 @@
 
 let
   editor = "nvim";
-  dotfiles = "${config.home.homeDirectory}/nixos/dotfiles";
+  repository = "${config.home.homeDirectory}/nixos";
+  dotfiles = "${repository}/dotfiles";
 
   dotfile = path: {
     source = config.lib.file.mkOutOfStoreSymlink "${dotfiles}/${path}";
@@ -73,14 +74,19 @@ in
 
   fonts.fontconfig.enable = true;
 
-  xdg.configFile = mirror [
-    "dunst/dunstrc"
-    "emacs"
-    "i3"
-    "nvim/coc-settings.json"
-    "nvim/snippets"
-    "wallpapers"
-  ];
+  xdg.configFile =
+    mirror [
+      "dunst/dunstrc"
+      "emacs"
+      "i3"
+      "nvim/coc-settings.json"
+      "nvim/snippets"
+    ]
+    // {
+      wallpapers = {
+        source = config.lib.file.mkOutOfStoreSymlink "${repository}/wallpapers";
+      };
+    };
 
   programs = {
     direnv = {
