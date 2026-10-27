@@ -1,5 +1,7 @@
 {
   config,
+  inputs,
+  lib,
   pkgs,
   username,
   ...
@@ -8,7 +10,20 @@
 let
   editor = "nvim";
   dotfiles = "${config.home.homeDirectory}/nixos/dotfiles";
-  inherit (config.lib.file) mkOutOfStoreSymlink;
+
+  dotfile = path: {
+    source = config.lib.file.mkOutOfStoreSymlink "${dotfiles}/${path}";
+    force = true;
+  };
+
+  mirror = paths: lib.genAttrs paths dotfile;
+
+  dired-nvim = pkgs.vimUtils.buildVimPlugin {
+    pname = "dired.nvim";
+    version = inputs.dired-nvim.shortRev;
+    src = inputs.dired-nvim;
+    dependencies = [ pkgs.vimPlugins.nui-nvim ];
+  };
 in
 {
   home = {
@@ -51,52 +66,20 @@ in
       vscodium
       xrdb
     ];
+
+    file.".Xresources" = dotfile "Xresources";
   };
 
   fonts.fontconfig.enable = true;
 
-  home.file.".Xresources" = {
-    source = mkOutOfStoreSymlink "${dotfiles}/Xresources";
-    force = true;
-  };
-
-  xdg.configFile = {
-    "nvim/init.lua".force = true;
-
-    "dunst/dunstrc" = {
-      source = mkOutOfStoreSymlink "${dotfiles}/dunst/dunstrc";
-      force = true;
-    };
-
-    emacs = {
-      source = mkOutOfStoreSymlink "${dotfiles}/emacs";
-      recursive = true;
-      force = true;
-    };
-
-    i3 = {
-      source = mkOutOfStoreSymlink "${dotfiles}/i3";
-      recursive = true;
-      force = true;
-    };
-
-    "nvim/coc-settings.json" = {
-      source = mkOutOfStoreSymlink "${dotfiles}/nvim/coc-settings.json";
-      force = true;
-    };
-
-    "nvim/snippets" = {
-      source = mkOutOfStoreSymlink "${dotfiles}/nvim/snippets";
-      recursive = true;
-      force = true;
-    };
-
-    wallpapers = {
-      source = mkOutOfStoreSymlink "${dotfiles}/wallpapers";
-      recursive = true;
-      force = true;
-    };
-  };
+  xdg.configFile = mirror [
+    "dunst/dunstrc"
+    "emacs"
+    "i3"
+    "nvim/coc-settings.json"
+    "nvim/snippets"
+    "wallpapers"
+  ];
 
   programs = {
     direnv = {
@@ -148,11 +131,10 @@ in
 
       plugins = with pkgs.vimPlugins; [
         coc-nvim
+        dired-nvim
         gitsigns-nvim
         gruber-darker-nvim
         luasnip
-        plenary-nvim
-        telescope-nvim
         vim-fugitive
         (nvim-treesitter.withPlugins (
           parsers: with parsers; [
@@ -180,7 +162,5 @@ in
         identitiesOnly = true;
       };
     };
-
   };
-
 }

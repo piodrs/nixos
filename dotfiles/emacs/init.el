@@ -168,6 +168,7 @@
 (global-set-key (kbd "C-c e a") #'eglot-code-actions)
 (global-set-key (kbd "C-c e f") #'format-code)
 (global-set-key (kbd "C-c /") #'comment-dwim)
+(global-set-key (kbd "C-c f") #'dired-jump)
 (global-set-key (kbd "C-c g") #'goto-line)
 (global-set-key (kbd "C-c m") #'mc/mark-all-dwim)
 (global-set-key (kbd "<f5>") #'shell-command)

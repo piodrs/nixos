@@ -8,6 +8,11 @@
       url = "github:nix-community/home-manager/release-26.05";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+
+    dired-nvim = {
+      url = "github:X3eRo0/dired.nvim";
+      flake = false;
+    };
   };
 
   outputs =

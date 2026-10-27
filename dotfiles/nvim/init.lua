@@ -65,22 +65,23 @@ luasnip.add_snippets('python', dofile(config .. '/snippets/python.lua'))
 local map = vim.keymap.set
 local silent = { silent = true }
 
-local telescope = require('telescope.builtin')
+require('dired').setup({
+    path_separator = '/',
+    show_banner = false,
+    show_icons = false,
+    show_hidden = true,
+    show_dot_dirs = true,
+    show_colors = true,
+})
 
-map('n', '<leader>ff', telescope.find_files, silent)
-map('n', '<leader>fg', telescope.git_files, silent)
-map('n', '<leader>fb', telescope.buffers, silent)
-map('n', '<leader>fo', telescope.oldfiles, silent)
-map('n', '<leader>fs', telescope.live_grep, silent)
-map('n', '<leader>fh', telescope.help_tags, silent)
-map('n', '<leader>fq', telescope.quickfix, silent)
+map('n', '<leader>ff', '<Cmd>Dired<CR>', silent)
 
 local git = require('gitsigns')
 git.setup()
 
 map('n', '<leader>gs', '<Cmd>Git<CR>', silent)
-map('n', '<leader>gc', telescope.git_commits, silent)
-map('n', '<leader>gb', telescope.git_branches, silent)
+map('n', '<leader>gc', '<Cmd>Git log --oneline --decorate --graph<CR>', silent)
+map('n', '<leader>gb', '<Cmd>Git branch<CR>', silent)
 map('n', '<leader>gd', '<Cmd>Gdiffsplit<CR>', silent)
 map('n', '[h', '<Cmd>Gitsigns nav_hunk prev<CR>', silent)
 map('n', ']h', '<Cmd>Gitsigns nav_hunk next<CR>', silent)
