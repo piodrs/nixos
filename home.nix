@@ -67,6 +67,7 @@ in
       vlc
       vscodium
       xrdb
+      pfetch
     ];
 
     file.".Xresources" = dotfile "Xresources";

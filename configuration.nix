@@ -111,6 +111,7 @@ in
   programs = {
     firefox.enable = true;
     steam.enable = true;
+    tmux.enable = true;
   };
 
   system.stateVersion = "26.05";
