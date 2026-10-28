@@ -58,6 +58,7 @@ in
       ruff
       rxvt-unicode
       simplescreenrecorder
+      obs-studio
       spotify
       tree-sitter
       typescript
