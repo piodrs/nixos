@@ -16,15 +16,15 @@
 
 #define ADACHI_STARTUP_COMMANDS                                             \
     ADACHI_RUN("xrdb -merge ~/.Xresources")                                \
-    ADACHI_RUN("feh --no-fehbg --bg-fill ~/.config/wallpapers/yuki.png")   \
+    ADACHI_RUN("feh --no-fehbg --bg-fill ~/.config/wallpapers/b-748.jpg") \
     ADACHI_RUN("dunst")
 
 #define ADACHI_BINDINGS                                           \
-    ADACHI_BIND(XK_c,      wm_exec,          "urxvt")            \
-    ADACHI_BIND(XK_exclam, wm_exec,          "dmenu_run")        \
-    ADACHI_BIND(XK_a,      wm_exec,          "urxvt -e alsamixer") \
-    ADACHI_BIND(XK_l,      wm_exec,          "loginctl lock-session") \
-    ADACHI_BIND(XK_f,      wm_exec,          "flameshot gui")    \
+    ADACHI_BIND(XK_c,      wm_spawn,         "urxvt")            \
+    ADACHI_BIND(XK_exclam, wm_spawn,         "dmenu_run")        \
+    ADACHI_BIND(XK_a,      wm_spawn,         "urxvt -e alsamixer") \
+    ADACHI_BIND(XK_l,      wm_spawn,         "loginctl lock-session") \
+    ADACHI_BIND(XK_f,      wm_spawn,         "flameshot gui")    \
     ADACHI_BIND(XK_n,      wm_next,          NULL)               \
     ADACHI_BIND(XK_space,  wm_next,          NULL)               \
     ADACHI_BIND(XK_p,      wm_prev,          NULL)               \

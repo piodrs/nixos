@@ -7,11 +7,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1793222094,
-        "narHash": "sha256-5fM+zShwhG0BSYyqFFQhSihoiy+uhbu1TZlLEtR8S+s=",
+        "lastModified": 1793304562,
+        "narHash": "sha256-wc7dYbdFT2pD4IrriZAzsVLN4dWfViacLfSM6of6slU=",
         "owner": "piodrs",
         "repo": "adachi",
-        "rev": "04a2cc038fdc1d0fb0ec86923ac2c37fa556fe52",
+        "rev": "3e64d4a2af93b6a3aa6d18d1fe226dd2e421852e",
         "type": "github"
       },
       "original": {
