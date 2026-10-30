@@ -77,6 +77,11 @@
   (add-hook 'before-save-hook #'ruff-format-buffer nil t)
   (eglot-ensure))
 
+(defun setup-nim-mode ()
+  (setq-local tab-width 2
+              indent-tabs-mode nil)
+  (eglot-ensure))
+
 (defun setup-nix-mode ()
   (setq-local tab-width 2
               indent-tabs-mode nil)
@@ -91,6 +96,7 @@
 (add-to-list 'eglot-server-programs
              '((python-mode python-ts-mode)
                . ("basedpyright-langserver" "--stdio")))
+(add-to-list 'eglot-server-programs '(nim-mode . ("nimlangserver")))
 (add-to-list 'eglot-server-programs '(nix-mode . ("nil")))
 
 (setq-default eglot-workspace-configuration
@@ -116,6 +122,7 @@
 (add-hook 'tsx-ts-mode-hook #'setup-typescript-mode)
 (add-hook 'python-mode-hook #'setup-python-mode)
 (add-hook 'python-ts-mode-hook #'setup-python-mode)
+(add-hook 'nim-mode-hook #'setup-nim-mode)
 (add-hook 'nix-mode-hook #'setup-nix-mode)
 (add-hook 'eglot-managed-mode-hook #'setup-python-diagnostics)
 

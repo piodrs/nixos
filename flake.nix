@@ -18,6 +18,7 @@
       url = "github:X3eRo0/dired.nvim";
       flake = false;
     };
+
   };
 
   outputs =
