@@ -27,61 +27,55 @@ let
   };
 in
 {
+
   home = {
     inherit username;
     homeDirectory = "/home/${username}";
     stateVersion = "26.05";
 
     packages = with pkgs; [
-      alsa-utils
+      curl
+      gnutar
+      imagemagick
+      pfetch
+      ripgrep
+      unzip
+
       basedpyright
       clang-tools
-      curl
-      dmenu
-      dunst
       eclipses.eclipse-java
-      flameshot
       gcc
       gnumake
-      gnutar
-      i3lock
-      i3status
-      imagemagick
-      iosevka
-      komikku
       nil
       nixfmt
       nodejs
-      prismlauncher
       python3
-      ripgrep
       ruff
-      rxvt-unicode
-      simplescreenrecorder
-      obs-studio
-      spotify
       tree-sitter
       typescript
       typescript-language-server
-      unzip
       uv
-      vlc
       vscodium
+
+      alsa-utils
+      dmenu
+      dunst
+      flameshot
+      i3lock
+      i3status
+      iosevka
+      rxvt-unicode
       xrdb
-      pfetch
+
+      komikku
+      obs-studio
+      prismlauncher
+      simplescreenrecorder
+      spotify
+      vlc
     ];
 
     file.".Xresources" = dotfile "Xresources";
-  };
-
-  fonts.fontconfig.enable = true;
-
-  gtk = {
-    enable = true;
-    iconTheme = {
-      name = "elementary-xfce";
-      package = pkgs.elementary-xfce-icon-theme;
-    };
   };
 
   xdg.configFile =
@@ -93,10 +87,25 @@ in
       "nvim/snippets"
     ]
     // {
-      wallpapers = {
-        source = config.lib.file.mkOutOfStoreSymlink "${repository}/wallpapers";
-      };
+      wallpapers.source = config.lib.file.mkOutOfStoreSymlink "${repository}/wallpapers";
     };
+
+  fonts.fontconfig.enable = true;
+
+  gtk = {
+    enable = true;
+    iconTheme = {
+      name = "elementary-xfce";
+      package = pkgs.elementary-xfce-icon-theme;
+    };
+  };
+
+  services.screen-locker = {
+    enable = true;
+    lockCmd = "${pkgs.i3lock}/bin/i3lock --nofork --color=101010 --ignore-empty-password --show-failed-attempts";
+    inactiveInterval = 10;
+    xautolock.enable = false;
+  };
 
   programs = {
     direnv = {
@@ -184,12 +193,5 @@ in
       enable = true;
       extraConfig = builtins.readFile ./dotfiles/tmux/tmux.conf;
     };
-  };
-
-  services.screen-locker = {
-    enable = true;
-    lockCmd = "${pkgs.i3lock}/bin/i3lock --nofork --color=101010 --ignore-empty-password --show-failed-attempts";
-    inactiveInterval = 10;
-    xautolock.enable = false;
   };
 }

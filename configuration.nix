@@ -1,4 +1,5 @@
 {
+  hostname,
   inputs,
   pkgs,
   username,
@@ -36,10 +37,9 @@ in
   nixpkgs.config.allowUnfree = true;
 
   networking = {
-    hostName = "nixos";
+    hostName = hostname;
     networkmanager.enable = true;
     nftables.enable = true;
-
     firewall.enable = true;
   };
 
@@ -61,6 +61,18 @@ in
   };
 
   console.keyMap = "br-abnt2";
+
+  users.users.${username} = {
+    isNormalUser = true;
+    description = "Asmita";
+    extraGroups = [
+      "docker"
+      "networkmanager"
+      "wheel"
+    ];
+  };
+
+  virtualisation.docker.enable = true;
 
   services = {
     displayManager.ly.enable = true;
@@ -86,34 +98,10 @@ in
     printing.enable = true;
     flatpak.enable = true;
     gvfs.enable = true;
-    pulseaudio.enable = false;
     tumbler.enable = true;
-
-    pipewire = {
-      enable = true;
-      alsa = {
-        enable = true;
-        support32Bit = true;
-      };
-      pulse.enable = true;
-    };
   };
-
-  security.rtkit.enable = true;
 
   environment.systemPackages = [ adachi ];
-
-  virtualisation.docker.enable = true;
-
-  users.users.${username} = {
-    isNormalUser = true;
-    description = "Asmita";
-    extraGroups = [
-      "docker"
-      "networkmanager"
-      "wheel"
-    ];
-  };
 
   programs = {
     dconf.enable = true;
@@ -126,6 +114,19 @@ in
     enable = true;
     extraPortals = [ pkgs.xdg-desktop-portal-gtk ];
     config.common.default = "gtk";
+  };
+
+  security.rtkit.enable = true;
+
+  services.pulseaudio.enable = false;
+
+  services.pipewire = {
+    enable = true;
+    alsa = {
+      enable = true;
+      support32Bit = true;
+    };
+    pulse.enable = true;
   };
 
   system.stateVersion = "26.05";

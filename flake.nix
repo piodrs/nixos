@@ -31,7 +31,7 @@
       nixosConfigurations.${hostname} = nixpkgs.lib.nixosSystem {
         inherit system;
 
-        specialArgs = { inherit inputs username; };
+        specialArgs = { inherit inputs username hostname; };
 
         modules = [
           ./configuration.nix
@@ -46,5 +46,7 @@
           }
         ];
       };
+
+      formatter.${system} = nixpkgs.legacyPackages.${system}.nixfmt;
     };
 }
