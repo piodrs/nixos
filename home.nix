@@ -171,6 +171,11 @@ in
         identitiesOnly = true;
       };
     };
+
+    tmux = {
+      enable = true;
+      extraConfig = builtins.readFile ./dotfiles/tmux/tmux.conf;
+    };
   };
 
   services.screen-locker = {

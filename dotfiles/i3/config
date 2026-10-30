@@ -2,14 +2,17 @@ set $mod Mod4
 set $terminal urxvt
 set $menu dmenu_run
 set $font Iosevka 10
-set $pink #ff79c6
+set $gruvbox_orange #d65d0e
+set $gruvbox_dark #3c3836
 
 font pango:$font
 
 floating_modifier $mod
 default_border pixel 1
 default_floating_border pixel 1
-client.focused $pink #1c1c1c #ffffff $pink $pink
+client.focused $gruvbox_orange $gruvbox_dark #ebdbb2 $gruvbox_orange $gruvbox_orange
+client.focused_inactive $gruvbox_dark $gruvbox_dark #a89984 $gruvbox_dark $gruvbox_dark
+client.unfocused $gruvbox_dark $gruvbox_dark #a89984 $gruvbox_dark $gruvbox_dark
 
 exec_always --no-startup-id xrdb -merge ~/.Xresources
 exec_always --no-startup-id feh --no-fehbg --bg-fill ~/.config/wallpapers/b-748.jpg

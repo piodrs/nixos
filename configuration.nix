@@ -1,4 +1,9 @@
-{ inputs, pkgs, username, ... }:
+{
+  inputs,
+  pkgs,
+  username,
+  ...
+}:
 
 let
   adachi = inputs.adachi.packages.${pkgs.stdenv.hostPlatform.system}.default.override {
@@ -58,14 +63,14 @@ in
   console.keyMap = "br-abnt2";
 
   services = {
+    displayManager.ly.enable = true;
+
     xserver = {
       enable = true;
       xkb = {
         layout = "br";
         variant = "";
       };
-      displayManager.lightdm.enable = true;
-      desktopManager.xfce.enable = true;
       windowManager.i3.enable = true;
       windowManager.session = [
         {
@@ -80,7 +85,9 @@ in
 
     printing.enable = true;
     flatpak.enable = true;
+    gvfs.enable = true;
     pulseaudio.enable = false;
+    tumbler.enable = true;
 
     pipewire = {
       enable = true;
@@ -111,7 +118,13 @@ in
   programs = {
     firefox.enable = true;
     steam.enable = true;
-    tmux.enable = true;
+    thunar.enable = true;
+  };
+
+  xdg.portal = {
+    enable = true;
+    extraPortals = [ pkgs.xdg-desktop-portal-gtk ];
+    config.common.default = "gtk";
   };
 
   system.stateVersion = "26.05";
