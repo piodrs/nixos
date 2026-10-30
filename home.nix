@@ -76,6 +76,14 @@ in
 
   fonts.fontconfig.enable = true;
 
+  gtk = {
+    enable = true;
+    iconTheme = {
+      name = "elementary-xfce";
+      package = pkgs.elementary-xfce-icon-theme;
+    };
+  };
+
   xdg.configFile =
     mirror [
       "dunst/dunstrc"
