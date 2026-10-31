@@ -159,12 +159,11 @@ end, expr)
 map('i', '<C-Space>', function() return vim.fn['coc#refresh']() end, expr)
 
 local treesitter = require('nvim-treesitter')
-local parsers = { 'c', 'cpp', 'javascript', 'nim', 'nix', 'python', 'typescript' }
+local parsers = { 'c', 'cpp', 'javascript', 'nix', 'python', 'typescript' }
 local indentation = {
     c = 4,
     cpp = 4,
     javascript = 2,
-    nim = 2,
     nix = 2,
     python = 4,
     typescript = 2,

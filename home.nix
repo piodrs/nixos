@@ -49,9 +49,6 @@ in
       gcc
       gnumake
       nil
-      nim
-      nimlangserver
-      nimble
       nixfmt
       nodejs
       python3
@@ -129,7 +126,6 @@ in
           flymake-ruff
           gruber-darker-theme
           multiple-cursors
-          nim-mode
           nix-mode
           orderless
           reformatter
@@ -174,7 +170,6 @@ in
             c
             cpp
             javascript
-            nim
             nix
             python
             typescript
