@@ -45,8 +45,11 @@ in
 
       basedpyright
       clang-tools
+      delve
       eclipses.eclipse-java
       gcc
+      go
+      gopls
       gnumake
       nil
       nixfmt
@@ -86,7 +89,6 @@ in
       "dunst/dunstrc"
       "emacs"
       "i3"
-      "nvim/coc-settings.json"
       "nvim/snippets"
     ]
     // {
@@ -124,6 +126,7 @@ in
           corfu
           envrc
           flymake-ruff
+          go-mode
           gruber-darker-theme
           multiple-cursors
           nix-mode
@@ -155,20 +158,24 @@ in
     neovim = {
       enable = true;
       defaultEditor = true;
-      withNodeJs = true;
       initLua = builtins.readFile ./dotfiles/nvim/init.lua;
 
       plugins = with pkgs.vimPlugins; [
-        coc-nvim
+        blink-cmp
         dired-nvim
+        direnv-vim
         gitsigns-nvim
         gruber-darker-nvim
         luasnip
+        nvim-autopairs
+        nvim-lspconfig
         vim-fugitive
+        vim-visual-multi
         (nvim-treesitter.withPlugins (
           parsers: with parsers; [
             c
             cpp
+            go
             javascript
             nix
             python

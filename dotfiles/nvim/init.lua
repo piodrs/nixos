@@ -1,69 +1,54 @@
 local config = vim.fn.stdpath('config')
 
 vim.g.mapleader = ' '
+vim.g.direnv_silent_load = 1
 
-vim.g.coc_data_home = vim.fn.stdpath('data') .. '/coc'
-vim.g.coc_start_at_startup = 0
-
-local function with_direnv(callback)
-    if vim.fn.executable('direnv') == 0 then
-        return callback()
-    end
-
-    vim.system({ 'direnv', 'export', 'json' }, { text = true }, vim.schedule_wrap(function(result)
-        if result.code ~= 0 then
-            vim.notify('direnv: ' .. vim.trim(result.stderr or ''), vim.log.levels.WARN)
-        elseif result.stdout ~= '' then
-            for key, value in pairs(vim.json.decode(result.stdout)) do
-                vim.env[key] = value ~= vim.NIL and value or nil
-            end
-        end
-        callback()
-    end))
+for name, value in pairs({
+    number = true,
+    relativenumber = true,
+    signcolumn = 'yes',
+    scrolloff = 8,
+    wrap = true,
+    linebreak = true,
+    breakindent = true,
+    tabstop = 4,
+    shiftwidth = 4,
+    softtabstop = 4,
+    expandtab = true,
+    smartindent = true,
+    ignorecase = true,
+    smartcase = true,
+    hlsearch = false,
+    splitbelow = true,
+    splitright = true,
+    updatetime = 250,
+    autoread = true,
+    completeopt = { 'menuone', 'noselect' },
+    pumheight = 8,
+    swapfile = false,
+    undofile = true,
+    termguicolors = true,
+    statusline = '%f %m%r%=%{v:lua.vim.lsp.status()} %y %l:%c %p%%',
+}) do
+    vim.opt[name] = value
 end
-
-with_direnv(function() vim.cmd.CocStart() end)
-
-vim.opt.number = true
-vim.opt.relativenumber = true
-vim.opt.signcolumn = 'yes'
-vim.opt.scrolloff = 8
-vim.opt.wrap = true
-vim.opt.linebreak = true
-vim.opt.breakindent = true
-
-vim.opt.tabstop = 4
-vim.opt.shiftwidth = 4
-vim.opt.softtabstop = 4
-vim.opt.expandtab = true
-vim.opt.smartindent = true
-
-vim.opt.ignorecase = true
-vim.opt.smartcase = true
-vim.opt.hlsearch = false
-vim.opt.splitbelow = true
-vim.opt.splitright = true
-vim.opt.updatetime = 250
-vim.opt.autoread = true
-vim.opt.completeopt = { 'menuone', 'noselect' }
-vim.opt.pumheight = 8
-vim.opt.swapfile = false
-vim.opt.undofile = true
-vim.opt.termguicolors = true
-vim.opt.statusline = "%f %m%r%=%{get(g:,'coc_status','')} %y %l:%c %p%%"
 
 vim.api.nvim_create_autocmd({ 'FocusGained', 'BufEnter', 'CursorHold', 'CursorHoldI' }, {
     group = vim.api.nvim_create_augroup('nvim_reload', { clear = true }),
     command = 'checktime',
 })
 
+vim.api.nvim_create_user_command('VTerm', 'vertical terminal', {})
+
 vim.cmd.colorscheme('gruber-darker')
 
 local luasnip = require('luasnip')
 luasnip.add_snippets('python', dofile(config .. '/snippets/python.lua'))
 
-local map = vim.keymap.set
-local silent = { silent = true }
+require('nvim-autopairs').setup()
+
+local gitsigns = require('gitsigns')
+gitsigns.setup()
 
 require('dired').setup({
     path_separator = '/',
@@ -74,114 +59,141 @@ require('dired').setup({
     show_colors = true,
 })
 
-map('n', '<leader>ff', '<Cmd>Dired<CR>', silent)
+local function map(mode, lhs, rhs, desc, buffer)
+    vim.keymap.set(mode, lhs, rhs, { silent = true, desc = desc, buffer = buffer })
+end
 
-local git = require('gitsigns')
-git.setup()
+require('blink.cmp').setup({
+    keymap = {
+        preset = 'none',
+        ['<Tab>'] = {
+            function()
+                if luasnip.expand_or_jumpable() then
+                    luasnip.expand_or_jump()
+                    return true
+                end
+            end,
+            'select_next',
+            'fallback',
+        },
+        ['<S-Tab>'] = { 'snippet_backward', 'select_prev', 'fallback' },
+        ['<CR>'] = { 'accept', 'fallback' },
+        ['<C-Space>'] = { 'show' },
+    },
+    completion = {
+        list = { selection = { preselect = false } },
+        documentation = { auto_show = true },
+        menu = {
+            draw = {
+                columns = {
+                    { 'label', 'label_description', gap = 1 },
+                    { 'kind' },
+                },
+            },
+        },
+    },
+    snippets = { preset = 'luasnip' },
+    signature = { enabled = true },
+})
 
-map('n', '<leader>gs', '<Cmd>Git<CR>', silent)
-map('n', '<leader>gc', '<Cmd>Git log --oneline --decorate --graph<CR>', silent)
-map('n', '<leader>gb', '<Cmd>Git branch<CR>', silent)
-map('n', '<leader>gd', '<Cmd>Gdiffsplit<CR>', silent)
-map('n', '[h', '<Cmd>Gitsigns nav_hunk prev<CR>', silent)
-map('n', ']h', '<Cmd>Gitsigns nav_hunk next<CR>', silent)
-map('n', '<leader>hp', git.preview_hunk, silent)
-map('n', '<leader>hs', git.stage_hunk, silent)
-map('n', '<leader>hu', git.undo_stage_hunk, silent)
+vim.lsp.config('*', { capabilities = require('blink.cmp').get_lsp_capabilities() })
+vim.lsp.config('clangd', { cmd = { 'clangd', '--background-index', '--clang-tidy' } })
+vim.lsp.config('basedpyright', {
+    settings = { basedpyright = { analysis = { typeCheckingMode = 'basic' } } },
+})
+vim.lsp.config('ruff', {
+    on_attach = function(client) client.server_capabilities.hoverProvider = false end,
+})
+vim.lsp.config('nil_ls', {
+    settings = { ['nil'] = { formatting = { command = { 'nixfmt' } } } },
+})
 
-map('n', '<leader>cd', '<Cmd>Ex<CR>', silent)
-map('n', '<leader>u', '<Cmd>undolist<CR>', silent)
-map('n', '<leader>rl', function() dofile(config .. '/init.lua') end, silent)
+vim.diagnostic.config({ virtual_text = true, severity_sort = true })
 
-map('n', 'J', 'mzJ`z')
-map('n', '<C-d>', '<C-d>zz')
-map('n', '<C-u>', '<C-u>zz')
-map('n', 'n', 'nzzzv')
-map('n', 'N', 'Nzzzv')
+vim.api.nvim_create_autocmd('LspAttach', {
+    group = vim.api.nvim_create_augroup('nvim_lsp', { clear = true }),
+    callback = function(event)
+        local buf = event.buf
 
-map('x', 'J', ":move '>+1<CR>gv=gv")
-map('x', 'K', ":move '<-2<CR>gv=gv")
-map('x', '<leader>p', '"_dP')
-map({ 'n', 'x' }, '<leader>y', '"+y')
+        map('n', 'gd', vim.lsp.buf.definition, 'Definition', buf)
+        map('n', 'gD', vim.lsp.buf.declaration, 'Declaration', buf)
+        map('n', 'gi', vim.lsp.buf.implementation, 'Implementation', buf)
+        map('n', 'go', vim.lsp.buf.type_definition, 'Type definition', buf)
+        map('n', 'gr', vim.lsp.buf.references, 'References', buf)
+        map('n', 'K', vim.lsp.buf.hover, 'Hover', buf)
+        map('n', 'gs', vim.lsp.buf.signature_help, 'Signature help', buf)
+        map('n', '<F2>', vim.lsp.buf.rename, 'Rename', buf)
+        map('n', '<F3>', vim.lsp.buf.format, 'Format buffer', buf)
+        map('x', '<F3>', 'gq', 'Format selection', buf)
+        map('n', '<F4>', vim.lsp.buf.code_action, 'Code action', buf)
+    end,
+})
 
-vim.api.nvim_create_user_command('VTerm', 'vertical terminal', {})
+vim.api.nvim_create_autocmd('User', {
+    group = vim.api.nvim_create_augroup('nvim_direnv', { clear = true }),
+    pattern = 'DirenvLoaded',
+    callback = function()
+        if #vim.lsp.get_clients() > 0 then
+            vim.cmd('lsp restart')
+        end
+    end,
+})
 
-map('n', '<leader>tt', '<Cmd>VTerm<CR>', silent)
-map('t', '<Esc>', '<C-\\><C-n>', silent)
+map('n', '<leader>cd', '<Cmd>Ex<CR>', 'Netrw')
+map('n', '<leader>ff', '<Cmd>Dired<CR>', 'Dired')
+map('n', '<leader>u', '<Cmd>undolist<CR>', 'Undo list')
+map('n', '<leader>rl', function() dofile(config .. '/init.lua') end, 'Reload config')
+map('n', '<leader>tt', '<Cmd>VTerm<CR>', 'Vertical terminal')
+map('t', '<Esc>', '<C-\\><C-n>', 'Leave terminal mode')
 
-map('n', 'gd', '<Plug>(coc-definition)', silent)
-map('n', 'gD', '<Plug>(coc-declaration)', silent)
-map('n', 'gi', '<Plug>(coc-implementation)', silent)
-map('n', 'go', '<Plug>(coc-type-definition)', silent)
-map('n', 'gr', '<Plug>(coc-references)', silent)
-map('n', '[d', '<Plug>(coc-diagnostic-prev)', silent)
-map('n', ']d', '<Plug>(coc-diagnostic-next)', silent)
-map('n', '<leader>ld', '<Cmd>CocList diagnostics<CR>', silent)
+map('n', 'J', 'mzJ`z', 'Join lines')
+map('n', '<C-d>', '<C-d>zz', 'Half page down')
+map('n', '<C-u>', '<C-u>zz', 'Half page up')
+map('n', 'n', 'nzzzv', 'Next match')
+map('n', 'N', 'Nzzzv', 'Previous match')
+map('x', 'J', ":move '>+1<CR>gv=gv", 'Move selection down')
+map('x', 'K', ":move '<-2<CR>gv=gv", 'Move selection up')
+map('x', '<leader>p', '"_dP', 'Paste without yanking')
+map({ 'n', 'x' }, '<leader>y', '"+y', 'Yank to clipboard')
 
-map('n', 'gl', function() vim.fn.CocActionAsync('diagnosticInfo') end, silent)
-map('n', 'K', function() vim.fn.CocActionAsync('doHover') end, silent)
-map('n', 'gs', function() vim.fn.CocActionAsync('showSignatureHelp') end, silent)
+map('n', '<leader>gs', '<Cmd>Git<CR>', 'Git status')
+map('n', '<leader>gc', '<Cmd>Git log --oneline --decorate --graph<CR>', 'Git log')
+map('n', '<leader>gb', '<Cmd>Git branch<CR>', 'Git branch')
+map('n', '<leader>gd', '<Cmd>Gdiffsplit<CR>', 'Git diff')
+map('n', '[h', '<Cmd>Gitsigns nav_hunk prev<CR>', 'Previous hunk')
+map('n', ']h', '<Cmd>Gitsigns nav_hunk next<CR>', 'Next hunk')
+map('n', '<leader>hp', gitsigns.preview_hunk, 'Preview hunk')
+map('n', '<leader>hs', gitsigns.stage_hunk, 'Stage hunk')
+map('n', '<leader>hu', gitsigns.undo_stage_hunk, 'Undo stage hunk')
 
-map('n', '<F2>', '<Plug>(coc-rename)', silent)
-map('n', '<F3>', function() vim.fn.CocActionAsync('format') end, silent)
-map('x', '<F3>', '<Plug>(coc-format-selected)', silent)
-map('n', '<F4>', '<Plug>(coc-codeaction-cursor)', silent)
+map('n', '[d', function() vim.diagnostic.jump({ count = -1, float = true }) end, 'Previous diagnostic')
+map('n', ']d', function() vim.diagnostic.jump({ count = 1, float = true }) end, 'Next diagnostic')
+map('n', 'gl', vim.diagnostic.open_float, 'Diagnostic info')
+map('n', '<leader>ld', vim.diagnostic.setqflist, 'Diagnostics list')
 
-local expr = { expr = true, silent = true }
-
-map('i', '<Tab>', function()
-    if luasnip.expand_or_jumpable() then
-        luasnip.expand_or_jump()
-        return ''
-    end
-
-    if vim.fn['coc#pum#visible']() == 1 then
-        return vim.fn['coc#pum#next'](1)
-    end
-
-    local before = vim.fn.getline('.'):sub(1, vim.fn.col('.') - 1)
-    return (before == '' or before:match('%s$')) and '<Tab>' or vim.fn['coc#refresh']()
-end, expr)
-
-map('i', '<S-Tab>', function()
-    if luasnip.jumpable(-1) then
-        luasnip.jump(-1)
-        return ''
-    end
-
-    return vim.fn['coc#pum#visible']() == 1 and vim.fn['coc#pum#prev'](1) or '<C-h>'
-end, expr)
-
-map('i', '<CR>', function()
-    return vim.fn['coc#pum#visible']() == 1 and vim.fn['coc#pum#confirm']() or '<CR>'
-end, expr)
-
-map('i', '<C-Space>', function() return vim.fn['coc#refresh']() end, expr)
-
-local treesitter = require('nvim-treesitter')
-local parsers = { 'c', 'cpp', 'javascript', 'nix', 'python', 'typescript' }
 local indentation = {
     c = 4,
     cpp = 4,
+    go = 4,
     javascript = 2,
     nix = 2,
     python = 4,
     typescript = 2,
 }
 
-local languages = vim.api.nvim_create_augroup('nvim_languages', { clear = true })
-
 vim.api.nvim_create_autocmd('FileType', {
-    group = languages,
-    pattern = parsers,
+    group = vim.api.nvim_create_augroup('nvim_languages', { clear = true }),
+    pattern = vim.tbl_keys(indentation),
     callback = function(event)
         local width = indentation[event.match]
 
         pcall(vim.treesitter.start, event.buf)
-        vim.bo[event.buf].expandtab = true
+        vim.bo[event.buf].expandtab = event.match ~= 'go'
         vim.bo[event.buf].shiftwidth = width
         vim.bo[event.buf].softtabstop = width
         vim.bo[event.buf].tabstop = width
         vim.bo[event.buf].indentexpr = "v:lua.require'nvim-treesitter'.indentexpr()"
     end,
 })
+
+vim.lsp.enable({ 'ts_ls', 'clangd', 'gopls', 'basedpyright', 'ruff', 'nil_ls' })
