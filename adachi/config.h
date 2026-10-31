@@ -23,7 +23,7 @@
 
 #define ADACHI_BINDINGS                                           \
     ADACHI_BIND(XK_c,      action_spawn,         "urxvt")            \
-    ADACHI_BIND(XK_exclam, action_spawn,         "dmenu_run")        \
+    ADACHI_BIND(XK_d, action_spawn,         "dmenu_run")        \
     ADACHI_BIND(XK_a,      action_spawn,         "urxvt -e alsamixer") \
     ADACHI_BIND(XK_l,      action_spawn,         "loginctl lock-session") \
     ADACHI_BIND(XK_f,      action_spawn,         "flameshot gui")    \
