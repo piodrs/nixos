@@ -78,6 +78,7 @@ in
       simplescreenrecorder
       spotify
       vlc
+      vesktop
     ];
 
     file.".Xresources" = dotfile "Xresources";
