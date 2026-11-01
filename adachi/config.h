@@ -21,27 +21,27 @@
     ADACHI_RUN("feh --no-fehbg --bg-fill ~/.config/wallpapers/b-748.jpg") \
     ADACHI_RUN("dunst")
 
-#define ADACHI_BINDINGS                                           \
-    ADACHI_BIND(XK_c,      action_spawn,         "urxvt")            \
-    ADACHI_BIND(XK_d, action_spawn,         "dmenu_run")        \
-    ADACHI_BIND(XK_a,      action_spawn,         "urxvt -e alsamixer") \
+#define ADACHI_BINDINGS                                                   \
+    ADACHI_BIND(XK_c,      action_spawn,         "urxvt")                 \
+    ADACHI_BIND(XK_d,      action_spawn,         "dmenu_run")             \
+    ADACHI_BIND(XK_a,      action_spawn,         "urxvt -e alsamixer")    \
     ADACHI_BIND(XK_l,      action_spawn,         "loginctl lock-session") \
-    ADACHI_BIND(XK_f,      action_spawn,         "flameshot gui")    \
-    ADACHI_BIND(XK_n,      action_next,          NULL)               \
-    ADACHI_BIND(XK_space,  action_next,          NULL)               \
-    ADACHI_BIND(XK_p,      action_prev,          NULL)               \
-    ADACHI_BIND(XK_t,      action_other,         NULL)               \
-    ADACHI_BIND(XK_k,      action_kill,          NULL)               \
-    ADACHI_BIND(XK_q,      action_quit,          NULL)               \
-    ADACHI_BIND(XK_s,      action_split_rows,    NULL)               \
-    ADACHI_BIND(XK_S,      action_split_columns, NULL)               \
-    ADACHI_BIND(XK_Tab,    action_frame_next,    NULL)               \
-    ADACHI_BIND(XK_Left,   action_frame_left,    NULL)               \
-    ADACHI_BIND(XK_Right,  action_frame_right,   NULL)               \
-    ADACHI_BIND(XK_Up,     action_frame_up,      NULL)               \
-    ADACHI_BIND(XK_Down,   action_frame_down,    NULL)               \
-    ADACHI_BIND(XK_r,      action_resize,        NULL)               \
-    ADACHI_BIND(XK_Q,      action_only,          NULL)               \
+    ADACHI_BIND(XK_f,      action_spawn,         "flameshot gui")         \
+    ADACHI_BIND(XK_n,      action_next,          NULL)                    \
+    ADACHI_BIND(XK_space,  action_next,          NULL)                    \
+    ADACHI_BIND(XK_p,      action_prev,          NULL)                    \
+    ADACHI_BIND(XK_t,      action_other,         NULL)                    \
+    ADACHI_BIND(XK_k,      action_kill,          NULL)                    \
+    ADACHI_BIND(XK_q,      action_quit,          NULL)                    \
+    ADACHI_BIND(XK_s,      action_split_rows,    NULL)                    \
+    ADACHI_BIND(XK_S,      action_split_columns, NULL)                    \
+    ADACHI_BIND(XK_Tab,    action_frame_next,    NULL)                    \
+    ADACHI_BIND(XK_Left,   action_frame_left,    NULL)                    \
+    ADACHI_BIND(XK_Right,  action_frame_right,   NULL)                    \
+    ADACHI_BIND(XK_Up,     action_frame_up,      NULL)                    \
+    ADACHI_BIND(XK_Down,   action_frame_down,    NULL)                    \
+    ADACHI_BIND(XK_r,      action_resize,        NULL)                    \
+    ADACHI_BIND(XK_Q,      action_only,          NULL)                    \
     ADACHI_BIND(XK_R,      action_remove,        NULL)
 
 _Static_assert(ADACHI_WORKSPACES >= 1 && ADACHI_WORKSPACES <= 9, "ADACHI_WORKSPACES must be between 1 and 9");
