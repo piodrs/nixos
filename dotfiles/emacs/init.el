@@ -30,6 +30,21 @@
 (electric-pair-mode 1)
 (delete-selection-mode 1)
 
+(defun show-c-startup-message ()
+  (when (and (null command-line-args-left)
+             (equal (buffer-name) "*scratch*")
+             (executable-find "cowsay"))
+    (let ((inhibit-read-only t))
+      (erase-buffer)
+      (call-process "cowsay" nil t nil
+                    "C: simple, fast, and close to the metal.")
+      (goto-char (point-min))
+      (fundamental-mode)
+      (setq buffer-read-only t
+            buffer-offer-save nil))))
+
+(add-hook 'emacs-startup-hook #'show-c-startup-message)
+
 (dolist (face '(default fixed-pitch variable-pitch))
   (set-face-attribute face nil :family "Iosevka" :height 110))
 
@@ -120,7 +135,8 @@
           typescript-mode typescript-ts-mode tsx-ts-mode
           go-mode
           python-base-mode
-          nix-mode)
+          nix-mode
+          zig-mode)
          . eglot-ensure)
   :bind (("C-c e r" . eglot-rename)
          ("C-c e a" . eglot-code-actions))
@@ -135,6 +151,7 @@
   (add-to-list 'eglot-server-programs
                '((python-mode python-ts-mode)
                  . ("basedpyright-langserver" "--stdio")))
+  (add-to-list 'eglot-server-programs '(zig-mode . ("zls")))
   (setq-default eglot-workspace-configuration
                 '(:basedpyright (:analysis (:typeCheckingMode "basic"))
                   :nil (:formatting (:command ["nixfmt"])))))

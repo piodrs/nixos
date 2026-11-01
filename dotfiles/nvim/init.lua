@@ -40,6 +40,23 @@ vim.api.nvim_create_autocmd({ 'FocusGained', 'BufEnter', 'CursorHold', 'CursorHo
 
 vim.api.nvim_create_user_command('VTerm', 'vertical terminal', {})
 
+vim.api.nvim_create_autocmd('VimEnter', {
+    group = vim.api.nvim_create_augroup('nvim_startup', { clear = true }),
+    callback = function()
+        if vim.fn.argc() ~= 0 then return end
+
+        local cow = vim.fn.systemlist({ 'cowsay', 'C: simple, fast, and close to the metal.' })
+        if vim.v.shell_error ~= 0 then return end
+
+        vim.bo.buftype = 'nofile'
+        vim.bo.bufhidden = 'wipe'
+        vim.bo.swapfile = false
+        vim.api.nvim_buf_set_lines(0, 0, -1, false, cow)
+        vim.bo.modified = false
+        vim.bo.modifiable = false
+    end,
+})
+
 vim.cmd.colorscheme('gruber-darker')
 
 local luasnip = require('luasnip')
@@ -133,7 +150,7 @@ vim.api.nvim_create_autocmd('User', {
     group = vim.api.nvim_create_augroup('nvim_direnv', { clear = true }),
     pattern = 'DirenvLoaded',
     callback = function()
-        if #vim.lsp.get_clients() > 0 then
+        if #vim.lsp.get_clients({ bufnr = 0 }) > 0 then
             vim.cmd('lsp restart')
         end
     end,
@@ -179,6 +196,7 @@ local indentation = {
     nix = 2,
     python = 4,
     typescript = 2,
+    zig = 4,
 }
 
 vim.api.nvim_create_autocmd('FileType', {
@@ -196,4 +214,4 @@ vim.api.nvim_create_autocmd('FileType', {
     end,
 })
 
-vim.lsp.enable({ 'ts_ls', 'clangd', 'gopls', 'basedpyright', 'ruff', 'nil_ls' })
+vim.lsp.enable({ 'ts_ls', 'clangd', 'gopls', 'zls', 'basedpyright', 'ruff', 'nil_ls' })

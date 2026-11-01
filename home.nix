@@ -35,6 +35,7 @@ in
     stateVersion = "26.05";
 
     packages = with pkgs; [
+      cowsay
       curl
       gnutar
       imagemagick
@@ -61,6 +62,8 @@ in
       typescript-language-server
       uv
       vscodium
+      zig
+      zls
 
       alsa-utils
       dmenu
@@ -134,6 +137,7 @@ in
           reformatter
           typescript-mode
           yasnippet
+          zig-mode
         ];
     };
 
@@ -180,6 +184,7 @@ in
             nix
             python
             typescript
+            zig
           ]
         ))
       ];
