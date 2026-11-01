@@ -37,6 +37,7 @@ in
     packages = with pkgs; [
       cowsay
       curl
+      fortune
       gnutar
       imagemagick
       pfetch

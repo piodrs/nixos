@@ -45,7 +45,10 @@ vim.api.nvim_create_autocmd('VimEnter', {
     callback = function()
         if vim.fn.argc() ~= 0 then return end
 
-        local cow = vim.fn.systemlist({ 'cowsay', 'C: simple, fast, and close to the metal.' })
+        local fortune = vim.fn.system({ 'fortune' })
+        if vim.v.shell_error ~= 0 then return end
+
+        local cow = vim.fn.systemlist({ 'cowsay' }, fortune)
         if vim.v.shell_error ~= 0 then return end
 
         vim.bo.buftype = 'nofile'

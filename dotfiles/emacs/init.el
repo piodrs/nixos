@@ -33,11 +33,12 @@
 (defun show-c-startup-message ()
   (when (and (null command-line-args-left)
              (equal (buffer-name) "*scratch*")
-             (executable-find "cowsay"))
+             (executable-find "cowsay")
+             (executable-find "fortune"))
     (let ((inhibit-read-only t))
       (erase-buffer)
-      (call-process "cowsay" nil t nil
-                    "C: simple, fast, and close to the metal.")
+      (call-process "fortune" nil t)
+      (call-process-region (point-min) (point-max) "cowsay" t t)
       (goto-char (point-min))
       (fundamental-mode)
       (setq buffer-read-only t
